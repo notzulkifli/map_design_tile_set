@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Map Tiles</title>
+    <title>Seattle Tiles (Food and Meals)</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
@@ -65,6 +65,11 @@
         #menu a.active:hover {
             background: #3074a4;
         }
+
+        #zoomtext {
+            transform: scale(1);
+            transition: transform 0.2s ease-in-out;
+        }
     </style>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
 </head>
@@ -72,6 +77,7 @@
 <body>
     <nav id="menu"></nav>
     <div id='map'></div>
+    <p></p>
     <script type="text/javascript">
         mapboxgl.accessToken =
             'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
@@ -87,7 +93,7 @@
             map.addSource('Basemap-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/Basemap/{z}/{x}/{y}.png'
+                    'tiles/Basemap/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles designed by Zulkifli Sales</a>'
@@ -96,7 +102,7 @@
             map.addSource('Emergency_Food_Meals_King_County-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/Emergency_Food_Meals_King_County/{z}/{x}/{y}.png'
+                    'tiles/Emergency_Food_Meals_King_County/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles designed by Zulkifli Sales'
@@ -105,7 +111,7 @@
             map.addSource('Basemap_Emergency_Food-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/Basemap_Emergency_Food/{z}/{x}/{y}.png'
+                    'tiles/Basemap_Emergency_Food/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles designed by Zulkifli Sales'
@@ -114,7 +120,7 @@
             map.addSource('Seattle_Krakens-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/Seattle_Krakens/{z}/{x}/{y}.png'
+                    'tiles/Seattle_Krakens/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles designed by Zulkifli Sales'
@@ -156,18 +162,25 @@
                 'source': 'Seattle_Krakens-tiles'
             });
 
+            // Add zoom and rotation controls to the map.
+            const nav = new mapboxgl.NavigationControl();
+            map.addControl(nav, 'top-left');
+
         });
 
 
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('Basemap') || !map.getLayer('Emergency Food and Meals') || !map.getLayer('Basemap & Emergency Foods') || !map.getLayer('Seattle Krakens')) {
+            if (!map.getLayer('Basemap') || !map.getLayer('Emergency Food and Meals') || !map.getLayer(
+                    'Basemap & Emergency Foods') || !map.getLayer('Seattle Krakens')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['Basemap', 'Emergency Food and Meals', 'Basemap & Emergency Foods', 'Seattle Krakens'];
+            const toggleableLayerIds = ['Basemap', 'Emergency Food and Meals', 'Basemap & Emergency Foods',
+                'Seattle Krakens'
+            ];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
